@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:matrix_app/core/constants/app_sized.dart';
 import 'package:matrix_app/core/dete_surce/prefs_manager.dart';
 import 'package:matrix_app/features/auth/Sign_in_screen.dart';
 import 'package:matrix_app/features/home/home_screen.dart';
@@ -19,7 +20,7 @@ class _SplashScreenState extends State<SplashScreen> {
   }
 
   void _navigateAfterSplash() async {
-    await Future.delayed(Duration(seconds: 2));
+    await Future.delayed(Duration(seconds: 3));
     final bool onboardingCompleted =
         PrefManger().getBool("onboarding_completed") ?? false;
     final bool isLogin = PrefManger().getBool("is_login") ?? false;
@@ -72,7 +73,10 @@ class _SplashScreenState extends State<SplashScreen> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Image.asset('assets/images/logo_matrix.png', width: 150),
+              Image.asset(
+                'assets/images/logo_matrix.png',
+                width: AppSized.w140,
+              ),
             ],
           ),
         ),

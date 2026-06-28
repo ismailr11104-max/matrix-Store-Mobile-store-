@@ -38,20 +38,20 @@ ThemeData lightTheme = ThemeData(
     fillColor: Color(0xFFFFFFFF),
     hintStyle: TextStyle(color: Color(0xFF363636)),
     errorBorder: OutlineInputBorder(
-      borderRadius: BorderRadius.zero,
-      borderSide: BorderSide(color: Colors.red, width: 1),
+      borderRadius: BorderRadius.circular(12),
+      borderSide: const BorderSide(color: Colors.red),
     ),
     focusedBorder: OutlineInputBorder(
-      borderRadius: BorderRadius.zero,
-      borderSide: BorderSide(color: Color(0xFFD1DAD6), width: 1),
+      borderRadius: BorderRadius.circular(12),
+      borderSide: const BorderSide(color: Color(0xFFE5E7EB)),
     ),
     enabledBorder: OutlineInputBorder(
-      borderRadius: BorderRadius.zero,
-      borderSide: BorderSide(color: Color(0xFFD1DAD6), width: 1),
+      borderRadius: BorderRadius.circular(12),
+      borderSide: const BorderSide(color: Color(0xFFE5E7EB)),
     ),
     border: OutlineInputBorder(
-      borderRadius: BorderRadius.zero,
-      borderSide: BorderSide(color: Color(0xFFD1DAD6), width: 1),
+      borderRadius: BorderRadius.circular(12),
+      borderSide: const BorderSide(color: Color(0xFFE5E7EB)),
     ),
   ),
   bottomNavigationBarTheme: BottomNavigationBarThemeData(
