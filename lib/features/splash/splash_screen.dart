@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:matrix_app/core/constants/app_sized.dart';
-import 'package:matrix_app/core/dete_surce/prefs_manager.dart';
+import 'package:matrix_app/core/dete_surce/local_dete/prefs_manager.dart';
 import 'package:matrix_app/features/auth/Sign_in_screen.dart';
 import 'package:matrix_app/features/home/home_screen.dart';
 import 'package:matrix_app/features/onboarding/onbording_screen.dart';

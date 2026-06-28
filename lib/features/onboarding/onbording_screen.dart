@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:matrix_app/core/dete_surce/prefs_manager.dart';
+import 'package:matrix_app/core/dete_surce/local_dete/prefs_manager.dart';
 import 'package:matrix_app/features/auth/Sign_in_screen.dart';
 import 'package:matrix_app/features/onboarding/model/onboarding_model.dart';
 import 'package:matrix_app/features/onboarding/onboarding_cubit.dart';

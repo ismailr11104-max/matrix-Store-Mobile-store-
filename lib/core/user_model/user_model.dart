@@ -1,13 +1,24 @@
+import 'package:hive_ce_flutter/adapters.dart';
+
+part 'user_model.g.dart';
+
+@HiveType(typeId: 0)
 class UserModel {
+  @HiveField(0)
   final String? name;
+  @HiveField(1)
   final String? email;
+  @HiveField(2)
   final String? phone;
+  @HiveField(3)
   final String? password;
+  @HiveField(4)
   final String? accessToken;
+  @HiveField(5)
   final String? refreshToken;
 
   UserModel({
-    required this.name,
+    this.name,
     this.email,
     this.phone,
     this.password,
@@ -37,12 +48,9 @@ class UserModel {
     );
   }
 
-  factory UserModel.fromAuthResponse(
-    Map<String, dynamic> json,
-    String username,
-  ) {
+  factory UserModel.fromAuthResponse(Map<String, dynamic> json, String email) {
     return UserModel(
-      name: username,
+      email: email,
       accessToken: json['accessToken'],
       refreshToken: json['refreshToken'],
     );
