@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:matrix_app/core/dete_surce/pref_manger.dart';
+import 'package:matrix_app/core/dete_surce/prefs_manager.dart';
 import 'package:matrix_app/features/auth/Sign_in_screen.dart';
 import 'package:matrix_app/features/home/home_screen.dart';
 import 'package:matrix_app/features/onboarding/onbording_screen.dart';
@@ -73,7 +73,6 @@ class _SplashScreenState extends State<SplashScreen> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Image.asset('assets/images/logo_matrix.png', width: 150),
-              Navigator(),
             ],
           ),
         ),
