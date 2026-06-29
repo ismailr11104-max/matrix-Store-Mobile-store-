@@ -1,5 +1,6 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:matrix_app/core/dete_surce/local_dete/prefs_manager.dart';
 import 'package:matrix_app/core/enum/request_status.dart';
 import 'package:matrix_app/core/user_model/user_model.dart';
 import 'package:matrix_app/features/auth/repo/auth_repository.dart';
@@ -23,7 +24,7 @@ class AuthCubit extends Cubit<AuthState> {
         emit(
           state.copyWith(authStatus: RequestStatus.laded, userModel: userModel),
         );
-        // await PrefsManager().setBool("is_logged_in", true);
+        await PrefManger().setBool("is_login", true);
       }
     } catch (e) {
       emit(
@@ -54,6 +55,7 @@ class AuthCubit extends Cubit<AuthState> {
       );
 
       emit(state.copyWith(authStatus: RequestStatus.laded));
+      await PrefManger().setBool("onboarding_completed", true);
     } catch (e) {
       emit(
         state.copyWith(
