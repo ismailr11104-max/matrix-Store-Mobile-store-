@@ -3,7 +3,7 @@ part of 'auth_cubit.dart';
 class AuthState extends Equatable {
   final String? errorMessage;
   final RequestStatus authStatus;
-  final UserModel? userModel; // 🟢 الحقل المعتمد في الـ state
+  final UserModel? userModel;
 
   const AuthState({
     this.errorMessage,
@@ -14,15 +14,12 @@ class AuthState extends Equatable {
   AuthState copyWith({
     String? errorMessage,
     RequestStatus? authStatus,
-    UserModel? userModel, // 🟢 تعديل الاسم ليتطابق
+    UserModel? userModel,
   }) {
     return AuthState(
-      errorMessage:
-          errorMessage ??
-          this.errorMessage, // الاحتفاظ بالخطأ السابق إن لم يتغير
+      errorMessage: errorMessage ?? this.errorMessage,
       authStatus: authStatus ?? this.authStatus,
-      userModel:
-          userModel ?? this.userModel, // 🟢 تمرير الـ model بشكل صحيح هنا!
+      userModel: userModel ?? this.userModel,
     );
   }
 

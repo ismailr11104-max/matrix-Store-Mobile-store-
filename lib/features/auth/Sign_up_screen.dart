@@ -4,6 +4,7 @@ import 'package:matrix_app/core/constants/app_sized.dart';
 import 'package:matrix_app/core/dete_surce/remote_dete/auth/auth_api_service.dart';
 import 'package:matrix_app/core/enum/request_status.dart';
 import 'package:matrix_app/core/widgets/custom_text_from_field.dart';
+import 'package:matrix_app/features/auth/Sign_in_screen.dart';
 import 'package:matrix_app/features/auth/repo/auth_repository.dart';
 import 'package:matrix_app/features/home/home_screen.dart';
 
@@ -201,7 +202,16 @@ class SignUpScreen extends StatelessWidget {
                                 ),
                               ),
                               GestureDetector(
-                                onTap: () {},
+                                onTap: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (BuildContext context) {
+                                        return SignInScreen();
+                                      },
+                                    ),
+                                  );
+                                },
                                 child: Text(
                                   'Sign In',
                                   style: TextStyle(

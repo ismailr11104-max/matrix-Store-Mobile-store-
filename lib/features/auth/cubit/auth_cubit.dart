@@ -55,7 +55,7 @@ class AuthCubit extends Cubit<AuthState> {
       );
 
       emit(state.copyWith(authStatus: RequestStatus.laded));
-      await PrefManger().setBool("onboarding_completed", true);
+      await PrefManger().setBool("is_login", true);
     } catch (e) {
       emit(
         state.copyWith(
