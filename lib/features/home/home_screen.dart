@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:matrix_app/core/dete_surce/remote_dete/product/product_api_service.dart';
-import 'package:matrix_app/features/category/repo/product_repository.dart';
+import 'package:matrix_app/core/repo/product_repository.dart';
 import 'package:matrix_app/features/home/components/categories_list.dart';
 import 'package:matrix_app/features/home/components/image_promo_carousel.dart';
 import 'package:matrix_app/features/home/components/product_all.dart';
