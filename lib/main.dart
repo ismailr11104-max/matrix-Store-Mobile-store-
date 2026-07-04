@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:matrix_app/core/dete_surce/local_dete/prefs_manager.dart';
 import 'package:matrix_app/core/dete_surce/local_dete/user_repository.dart';
-import 'package:matrix_app/features/splash/splash_screen.dart';
+import 'package:matrix_app/features/home/home_screen.dart';
 
 import 'core/theme/light_theme.dart';
 
@@ -29,7 +29,7 @@ class MyApp extends StatelessWidget {
           debugShowCheckedModeBanner: false,
           title: 'Matrix App',
           theme: lightTheme,
-          home: SplashScreen(),
+          home: HomeScreen(),
         );
       },
     );

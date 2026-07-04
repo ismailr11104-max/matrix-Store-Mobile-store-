@@ -1,1 +1,1 @@
-enum RequestStatus { loading, laded, error, initial }
+enum RequestStatus { loading, initial, error, laded }
