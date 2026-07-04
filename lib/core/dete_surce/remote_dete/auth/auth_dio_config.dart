@@ -2,7 +2,7 @@ import 'dart:io';
 
 import 'package:dio/dio.dart';
 import 'package:dio/io.dart';
-import 'package:matrix_app/core/dete_surce/remote_dete/auth/auth_api_config.dart';
+import 'package:matrix_app/core/dete_surce/remote_dete/api_serves_config.dart';
 import 'package:matrix_app/core/dete_surce/remote_dete/interceptor/auth_interceptor.dart';
 import 'package:matrix_app/core/dete_surce/remote_dete/interceptor/logging_interceptor.dart';
 
@@ -10,10 +10,10 @@ class AuthDioConfig {
   static Dio authCreateDio() {
     final dio = Dio(
       BaseOptions(
-        baseUrl: AuthApiConfig.authBaseUrl,
-        connectTimeout: const Duration(seconds: 60),
-        receiveTimeout: const Duration(seconds: 60),
-        sendTimeout: const Duration(seconds: 60),
+        baseUrl: ApiServesConfig.BaseUrl,
+        connectTimeout: const Duration(seconds: 20),
+        receiveTimeout: const Duration(seconds: 20),
+        sendTimeout: const Duration(seconds: 20),
         headers: {
           "accept": "application/json",
           "Content-Type": "application/json",

@@ -1,5 +1,5 @@
 import 'package:matrix_app/core/dete_surce/local_dete/user_repository.dart';
-import 'package:matrix_app/core/dete_surce/remote_dete/auth/auth_api_config.dart';
+import 'package:matrix_app/core/dete_surce/remote_dete/api_serves_config.dart';
 import 'package:matrix_app/core/dete_surce/remote_dete/auth/auth_api_service.dart';
 import 'package:matrix_app/core/user_model/user_model.dart';
 
@@ -11,7 +11,7 @@ class AuthRepository {
     required String password,
   }) async {
     final response = await apiService.post(
-      AuthApiConfig.authLogin,
+      ApiServesConfig.authLogin,
       body: {"email": email, "password": password},
     );
     UserModel model = UserModel.fromAuthResponse(response, email);
@@ -26,7 +26,7 @@ class AuthRepository {
     required String password,
   }) async {
     await apiService.post(
-      AuthApiConfig.authRegister,
+      ApiServesConfig.authRegister,
       body: {
         "name": name,
         "email": email,
