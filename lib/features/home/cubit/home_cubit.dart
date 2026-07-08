@@ -1,8 +1,8 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:matrix_app/core/enum/request_status.dart';
-import 'package:matrix_app/core/repo/product_repository.dart';
 import 'package:matrix_app/features/category/category_model/category_model.dart';
+import 'package:matrix_app/features/category/repo/product_repository.dart';
 import 'package:matrix_app/features/home/model_prodect/product_model.dart';
 
 part 'home_state.dart';

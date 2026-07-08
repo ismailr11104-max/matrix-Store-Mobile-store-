@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:matrix_app/core/constants/app_sized.dart';
 import 'package:matrix_app/core/dete_surce/local_dete/prefs_manager.dart';
 import 'package:matrix_app/features/auth/Sign_in_screen.dart';
-import 'package:matrix_app/features/home/home_screen.dart';
+import 'package:matrix_app/features/button_navigation/main_navigation_screen.dart';
 import 'package:matrix_app/features/onboarding/onbording_screen.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -48,7 +48,7 @@ class _SplashScreenState extends State<SplashScreen> {
         context,
         MaterialPageRoute(
           builder: (BuildContext context) {
-            return HomeScreen();
+            return MainNavigationScreen();
           },
         ),
       );
