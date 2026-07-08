@@ -12,33 +12,26 @@ abstract class BaseCartRepository {
 
 class CartRepository extends BaseCartRepository {
   final CartApiService cartApiService;
-
-  // حقن الـ Service داخل الـ Repository بنفس نمط الـ Product تماماً
   CartRepository(this.cartApiService);
 
-  // 1. جلب منتجات السلة وتحويلها إلى List من ProductModel مباشرة
   @override
   Future<List<ProductModel>> getCartItems() async {
     final result = await cartApiService.getCartItems();
 
-    // أ- إذا كان السيرفر يعيد القائمة مباشرة
-    if (result is List) {
-      return result.map((e) => ProductModel.fromJson(e)).toList();
-    }
-    // ب- إذا كان السيرفر يعيد Map ويحتوي على قائمة المنتجات بداخل مفتاح معين (مثل 'cartItems' أو 'products')
-    else if (result is Map) {
-      // نبحث عن أي مفتاح يحتوي على قائمة بداخل الـ Map القادم من السيرفر
-      final cartData =
-          result['cartItems'] ?? result['products'] ?? result['data'];
-      if (cartData is List) {
-        return cartData.map((e) => ProductModel.fromJson(e)).toList();
+    if (result is Map) {
+      final cartItemsData = result['items'];
+
+      if (cartItemsData is List) {
+        return cartItemsData.map((item) {
+          final productJson = item['product'];
+          return ProductModel.fromJson(productJson);
+        }).toList();
       }
     }
 
     throw Exception("Unexpected data format for Cart");
   }
 
-  // 2. دالة إضافة منتج أو تحديث كميته في السلة
   @override
   Future<dynamic> uploadOrUpdateCart({
     required int productId,
@@ -51,7 +44,6 @@ class CartRepository extends BaseCartRepository {
     return result;
   }
 
-  // 3. دالة حذف منتج من السلة عبر الـ ID
   @override
   Future<dynamic> deleteCartItem(int productId) async {
     final result = await cartApiService.deleteCartItem(productId);
