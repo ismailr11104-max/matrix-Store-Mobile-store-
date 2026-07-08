@@ -3,7 +3,7 @@ part of 'cart_cubit.dart';
 class CartState extends Equatable {
   final List<ProductModel> cartList;
   final RequestStatus cartStatus;
-  final num quantity; // لعداد الكمية في شاشة التفاصيل
+  final num quantity;
   final String? errorMessage;
 
   const CartState({
