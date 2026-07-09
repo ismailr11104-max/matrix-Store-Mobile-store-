@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:matrix_app/core/constants/app_sized.dart';
 import 'package:matrix_app/features/cart/cart_screen.dart';
 import 'package:matrix_app/features/category/category_screen.dart';
 import 'package:matrix_app/features/home/home_screen.dart';
@@ -21,6 +22,7 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
     CartScreen(),
     ProfileScreen(),
   ];
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -38,28 +40,58 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
         items: [
           BottomNavigationBarItem(
             icon: _currentIndex == 0
-                ? SvgPicture.asset('assets/images/tabler-icon-smart-home.svg ')
-                : SvgPicture.asset('assets/images/icon-smart-home.svg'),
+                ? SvgPicture.asset(
+                    'assets/images/tabler-icon-smart-home.svg',
+                    width: AppSized.w24,
+                    height: AppSized.h24,
+                  )
+                : SvgPicture.asset(
+                    'assets/images/icon-smart-home.svg',
+                    width: AppSized.w24,
+                    height: AppSized.h24,
+                  ),
             label: 'Home',
           ),
           BottomNavigationBarItem(
             icon: _currentIndex == 1
-                ? SvgPicture.asset('assets/images/tabler-icon-category.svg')
-                : SvgPicture.asset(' assets/images/icon-category.svg'),
+                ? SvgPicture.asset(
+                    'assets/images/tabler-icon-category.svg',
+                    width: AppSized.w24,
+                    height: AppSized.h24,
+                  )
+                : SvgPicture.asset(
+                    'assets/images/icon-category.svg',
+                    width: AppSized.w24,
+                    height: AppSized.h24,
+                  ),
             label: 'Category',
           ),
           BottomNavigationBarItem(
             icon: _currentIndex == 2
                 ? SvgPicture.asset(
-                    'assets/images/tabler-icon-shopping-cart.svg ',
+                    'assets/images/tabler-icon-shopping-cart.svg',
+                    width: AppSized.w24,
+                    height: AppSized.h24,
                   )
-                : SvgPicture.asset('assets/images/icon-shopping-cart.svg'),
+                : SvgPicture.asset(
+                    'assets/images/icon-shopping-cart.svg',
+                    width: AppSized.w24,
+                    height: AppSized.h24,
+                  ),
             label: 'Cart',
           ),
           BottomNavigationBarItem(
             icon: _currentIndex == 3
-                ? SvgPicture.asset('assets/images/tabler-icon-user.svg ')
-                : SvgPicture.asset('assets/images/icon-user.svg'),
+                ? SvgPicture.asset(
+                    'assets/images/tabler-icon-user.svg',
+                    width: AppSized.w24,
+                    height: AppSized.h24,
+                  )
+                : SvgPicture.asset(
+                    'assets/images/icon-user.svg',
+                    width: AppSized.w24,
+                    height: AppSized.h24,
+                  ),
             label: 'Profile',
           ),
         ],
