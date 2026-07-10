@@ -7,7 +7,7 @@ import 'package:matrix_app/core/widgets/custom_text_from_field.dart';
 import 'package:matrix_app/features/auth/Sign_up_screen.dart';
 import 'package:matrix_app/features/auth/cubit/auth_cubit.dart';
 import 'package:matrix_app/features/auth/repo/auth_repository.dart';
-import 'package:matrix_app/features/home/home_screen.dart';
+import 'package:matrix_app/features/button_navigation/main_navigation_screen.dart';
 
 class SignInScreen extends StatelessWidget {
   SignInScreen({super.key});
@@ -31,7 +31,7 @@ class SignInScreen extends StatelessWidget {
                   if (state.authStatus == RequestStatus.laded) {
                     Navigator.of(context).pushReplacement(
                       MaterialPageRoute(
-                        builder: (context) => const HomeScreen(),
+                        builder: (context) => const MainNavigationScreen(),
                       ),
                     );
                   } else if (state.authStatus == RequestStatus.error) {

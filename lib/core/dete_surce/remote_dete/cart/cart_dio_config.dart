@@ -21,7 +21,6 @@ class CartDioConfig {
       ),
     );
 
-    // التعامل مع شهادات الأمان (SSL) مثل كود الـ Product تماماً
     dio.httpClientAdapter = IOHttpClientAdapter(
       createHttpClient: () {
         final client = HttpClient();
@@ -31,7 +30,6 @@ class CartDioConfig {
       },
     );
 
-    // إضافة الـ Interceptors الخاصة بالتوكن والـ Log
     dio.interceptors.addAll([AuthInterceptor(), LoggingInterceptor()]);
     return dio;
   }

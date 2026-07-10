@@ -1,21 +1,19 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:matrix_app/core/enum/request_status.dart';
+import 'package:matrix_app/features/cart/cart_model/cart_model.dart';
 import 'package:matrix_app/features/cart/repo/cart_repository.dart';
-import 'package:matrix_app/features/home/model_prodect/product_model.dart';
 
 part 'cart_state.dart';
 
 class CartCubit extends Cubit<CartState> {
   final BaseCartRepository repository;
 
-  // استقبال الـ Repository وتعيين قيمة الكمية الابتدائية للعداد
   CartCubit(this.repository, num initialQuantity)
     : super(CartState(quantity: initialQuantity)) {
-    getCartDate(); // استدعاء تلقائي لجلب بيانات السلة عند إنشاء الكيوبيت
+    getCartDate();
   }
 
-  // التحكم في عداد الكمية داخل التطبيق
   void incrementQuantity() {
     emit(state.copyWith(quantity: state.quantity + 1));
   }
@@ -29,10 +27,12 @@ class CartCubit extends Cubit<CartState> {
   Future<void> getCartDate() async {
     try {
       emit(state.copyWith(cartStatus: RequestStatus.loading));
-      final cartItems = await repository.getCartItems();
+
+      final cartData = await repository.getCartItems();
+
       emit(
         state.copyWith(
-          cartList: cartItems,
+          cartModel: cartData,
           cartStatus: RequestStatus.laded,
           errorMessage: null,
         ),
@@ -47,7 +47,6 @@ class CartCubit extends Cubit<CartState> {
     }
   }
 
-  // 2️⃣ دالة إضافة منتج أو تحديث كميته في السلة (POST)
   Future<void> uploadOrUpdateCartDate(int productId) async {
     try {
       emit(state.copyWith(cartStatus: RequestStatus.loading));
@@ -56,7 +55,6 @@ class CartCubit extends Cubit<CartState> {
         quantity: state.quantity.toInt(),
       );
 
-      // بعد الإضافة الناجحة نقوم بإعادة تحديث وجلب بيانات السلة تلقائياً
       getCartDate();
     } catch (e) {
       emit(
@@ -68,19 +66,35 @@ class CartCubit extends Cubit<CartState> {
     }
   }
 
-  // 3️⃣ دالة حذف منتج من السلة (DELETE)
   Future<void> deleteCartItemDate(int productId) async {
     try {
+      if (state.cartModel == null) return;
+
       emit(state.copyWith(cartStatus: RequestStatus.loading));
       await repository.deleteCartItem(productId);
 
-      // تحديث قائمة السلة المعروضة في التطبيق فوراً بدون عمل ريلود للشاشة
-      final updatedList = state.cartList
-          .where((element) => element.id != productId)
+      final updatedItems = state.cartModel!.items
+          .where((element) => element.productId != productId)
           .toList();
+
+      num newTotalPrice = 0;
+      num newTotalItems = 0;
+      for (var item in updatedItems) {
+        newTotalPrice +=
+            (item.product.price *
+            item.quantity); // حساب السعر بناءً على السعر الفعلي والكمية[cite: 3]
+        newTotalItems += item.quantity;
+      }
+
+      final updatedCartModel = CartModel(
+        items: updatedItems,
+        totalItems: newTotalItems,
+        totalPrice: newTotalPrice,
+      );
+
       emit(
         state.copyWith(
-          cartList: updatedList,
+          cartModel: updatedCartModel,
           cartStatus: RequestStatus.laded,
           errorMessage: null,
         ),
