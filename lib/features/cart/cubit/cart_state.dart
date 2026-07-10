@@ -1,26 +1,26 @@
 part of 'cart_cubit.dart';
 
 class CartState extends Equatable {
-  final List<ProductModel> cartList;
+  final CartModel? cartModel;
   final RequestStatus cartStatus;
   final num quantity;
   final String? errorMessage;
 
   const CartState({
-    this.cartList = const [],
+    this.cartModel,
     this.cartStatus = RequestStatus.loading,
     this.quantity = 1,
     this.errorMessage,
   });
 
   CartState copyWith({
-    List<ProductModel>? cartList,
+    CartModel? cartModel,
     RequestStatus? cartStatus,
     num? quantity,
     String? errorMessage,
   }) {
     return CartState(
-      cartList: cartList ?? this.cartList,
+      cartModel: cartModel ?? this.cartModel,
       cartStatus: cartStatus ?? this.cartStatus,
       quantity: quantity ?? this.quantity,
       errorMessage: errorMessage ?? this.errorMessage,
@@ -28,5 +28,5 @@ class CartState extends Equatable {
   }
 
   @override
-  List<Object?> get props => [cartList, cartStatus, quantity, errorMessage];
+  List<Object?> get props => [cartModel, cartStatus, quantity, errorMessage];
 }

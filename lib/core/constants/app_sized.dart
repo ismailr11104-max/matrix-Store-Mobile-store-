@@ -37,6 +37,7 @@ class AppSized {
   static final w32 = 32.w;
   static final w42 = 42.w;
   static final w48 = 48.w;
+  static final w80 = 80.w;
   static final w100 = 100.w;
   static final w140 = 140.w;
   static final w168 = 168.w;
