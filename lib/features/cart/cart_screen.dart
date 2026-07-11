@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:matrix_app/core/constants/app_sized.dart';
 import 'package:matrix_app/core/enum/request_status.dart';
+import 'package:matrix_app/features/cart/components/empty_cart_widget.dart';
+import 'package:matrix_app/features/cart/components/error_no_internet.dart';
 import 'package:matrix_app/features/cart/components/item_card.dart';
 import 'package:matrix_app/features/cart/cubit/cart_cubit.dart';
 
@@ -41,21 +43,11 @@ class CartScreen extends StatelessWidget {
               );
 
             case RequestStatus.error:
-              return Center(
-                child: Text(
-                  state.errorMessage ?? 'Error loading cart items',
-                  style: const TextStyle(color: Colors.redAccent, fontSize: 16),
-                ),
-              );
+              return Center(child: const ErrorNoInternet());
 
             case RequestStatus.laded:
               if (state.cartModel == null || state.cartModel!.items.isEmpty) {
-                return const Center(
-                  child: Text(
-                    "Your cart is empty!",
-                    style: TextStyle(color: Colors.grey, fontSize: 16),
-                  ),
-                );
+                return Center(child: EmptyCartWidget());
               }
 
               return Column(

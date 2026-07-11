@@ -13,10 +13,8 @@ abstract class BaseCartApiService {
 }
 
 class CartApiService extends BaseCartApiService {
-  // استخدام الـ configuration الموحد والنظيف الخاص بالـ Cart
   final dio = CartDioConfig.cartDioConfig();
 
-  // 1. دالة جلب منتجات السلة (GET)
   @override
   Future<dynamic> getCartItems() async {
     try {

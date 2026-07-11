@@ -1,9 +1,16 @@
 import 'package:equatable/equatable.dart';
-import 'package:matrix_app/features/home/model_prodect/product_model.dart'; // المسار الخاص بك
+import 'package:hive_ce_flutter/adapters.dart';
+import 'package:matrix_app/features/home/model_prodect/product_model.dart';
 
+part 'cart_item_model.g.dart';
+
+@HiveType(typeId: 3)
 class CartItemModel extends Equatable {
+  @HiveField(0)
   final num productId;
+  @HiveField(1)
   final num quantity;
+  @HiveField(2)
   final ProductModel product;
 
   const CartItemModel({
