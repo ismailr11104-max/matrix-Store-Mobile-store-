@@ -1,4 +1,5 @@
-import 'package:matrix_app/core/dete_surce/remote_dete/cart/cart_api_service.dart'; // مسار الـ Service الخاص بك
+import 'package:matrix_app/core/dete_surce/local_dete/cart_local_data.dart';
+import 'package:matrix_app/core/dete_surce/remote_dete/cart/cart_api_service.dart';
 import 'package:matrix_app/features/cart/cart_model/cart_model.dart';
 
 abstract class BaseCartRepository {
@@ -8,22 +9,40 @@ abstract class BaseCartRepository {
     required int productId,
     required int quantity,
   });
+
   Future<dynamic> deleteCartItem(int productId);
 }
 
 class CartRepository extends BaseCartRepository {
   final CartApiService cartApiService;
-  CartRepository(this.cartApiService);
+  final CartLocalData cartLocalData;
+
+  CartRepository(this.cartApiService, this.cartLocalData);
 
   @override
   Future<CartModel> getCartItems() async {
-    final result = await cartApiService.getCartItems();
+    try {
+      final result = await cartApiService.getCartItems();
+      if (result is Map) {
+        final Map<String, dynamic> targetMap = Map<String, dynamic>.from(
+          result,
+        );
+        final cart = CartModel.fromJson(targetMap);
+        await cartLocalData.saveCart(cart);
+        return cart;
+      }
+      throw Exception(
+        "Unexpected data format for Cart. Expected Map, got ${result.runtimeType}",
+      );
+    } catch (e) {
+      print("Cart Repository Error: $e");
+      final cachedCart = cartLocalData.getCart();
 
-    if (result is Map<String, dynamic>) {
-      return CartModel.fromJson(result);
+      if (cachedCart != null) {
+        return cachedCart;
+      }
+      rethrow;
     }
-
-    throw Exception("Unexpected data format for Cart");
   }
 
   @override
@@ -35,12 +54,14 @@ class CartRepository extends BaseCartRepository {
       productId: productId,
       quantity: quantity,
     );
+    await getCartItems();
     return result;
   }
 
   @override
   Future<dynamic> deleteCartItem(int productId) async {
     final result = await cartApiService.deleteCartItem(productId);
+    await getCartItems();
     return result;
   }
 }
