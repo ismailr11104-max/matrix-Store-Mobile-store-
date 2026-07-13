@@ -54,7 +54,6 @@ class CartCubit extends Cubit<CartState> {
         productId: productId,
         quantity: state.quantity.toInt(),
       );
-
       getCartDate();
     } catch (e) {
       emit(
@@ -80,9 +79,7 @@ class CartCubit extends Cubit<CartState> {
       num newTotalPrice = 0;
       num newTotalItems = 0;
       for (var item in updatedItems) {
-        newTotalPrice +=
-            (item.product.price *
-            item.quantity); // حساب السعر بناءً على السعر الفعلي والكمية[cite: 3]
+        newTotalPrice += (item.product.price * item.quantity);
         newTotalItems += item.quantity;
       }
 

@@ -6,6 +6,7 @@ import 'package:matrix_app/features/cart/components/empty_cart_widget.dart';
 import 'package:matrix_app/features/cart/components/error_no_internet.dart';
 import 'package:matrix_app/features/cart/components/item_card.dart';
 import 'package:matrix_app/features/cart/cubit/cart_cubit.dart';
+import 'package:matrix_app/features/favorites/favorites_screen.dart';
 
 class CartScreen extends StatelessWidget {
   const CartScreen({super.key});
@@ -25,7 +26,14 @@ class CartScreen extends StatelessWidget {
         scrolledUnderElevation: 0,
         actions: [
           IconButton(
-            onPressed: () {},
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const FavoritesScreen(),
+                ),
+              );
+            },
             icon: const Icon(
               Icons.favorite_border_outlined,
               color: Colors.black,

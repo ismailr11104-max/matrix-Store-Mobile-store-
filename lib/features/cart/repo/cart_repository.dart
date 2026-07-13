@@ -24,18 +24,16 @@ class CartRepository extends BaseCartRepository {
     try {
       final result = await cartApiService.getCartItems();
       if (result is Map) {
-        final Map<String, dynamic> targetMap = Map<String, dynamic>.from(
-          result,
-        );
-        final cart = CartModel.fromJson(targetMap);
+        final Map<String, dynamic> cartMap = Map<String, dynamic>.from(result);
+        final cart = CartModel.fromJson(cartMap);
         await cartLocalData.saveCart(cart);
         return cart;
+      } else {
+        throw Exception(
+          "Unexpected data format for Cart. Expected Map, got ${result.runtimeType}",
+        );
       }
-      throw Exception(
-        "Unexpected data format for Cart. Expected Map, got ${result.runtimeType}",
-      );
     } catch (e) {
-      print("Cart Repository Error: $e");
       final cachedCart = cartLocalData.getCart();
 
       if (cachedCart != null) {

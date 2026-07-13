@@ -32,10 +32,15 @@ class CartLocalData {
     if (!Hive.isAdapterRegistered(1)) {
       Hive.registerAdapter(ProductModelAdapter());
     }
-    if (!Hive.isAdapterRegistered(5)) {
+    if (!Hive.isAdapterRegistered(4)) {
       Hive.registerAdapter(ProductSpecsAdapter());
     }
-    _cartBox = await Hive.openBox<CartModel>(Constants.cartBox);
+    try {
+      _cartBox = await Hive.openBox<CartModel>(Constants.cartBox);
+    } catch (e) {
+      await Hive.deleteBoxFromDisk(Constants.cartBox);
+      _cartBox = await Hive.openBox<CartModel>(Constants.cartBox);
+    }
   }
 
   Future<void> saveCart(CartModel cart) async {
