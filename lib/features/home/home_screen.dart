@@ -2,6 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:matrix_app/core/dete_surce/remote_dete/product/product_api_service.dart';
 import 'package:matrix_app/features/category/repo/product_repository.dart';
+import 'package:matrix_app/features/favorites/cubit/favorites_cubit.dart';
+import 'package:matrix_app/features/favorites/date/local_date/favorite_local_date.dart';
+import 'package:matrix_app/features/favorites/date/remote_date/favorites_api_serves.dart';
+import 'package:matrix_app/features/favorites/repo/favorites_repository.dart';
 import 'package:matrix_app/features/home/components/categories_list.dart';
 import 'package:matrix_app/features/home/components/image_promo_carousel.dart';
 import 'package:matrix_app/features/home/components/product_all.dart';
@@ -13,10 +17,19 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) =>
-          ProductCubit(ProductRepository(ProductsApiService()))
-            ..getProductDate(),
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(
+          create: (context) =>
+              ProductCubit(ProductRepository(ProductsApiService()))
+                ..getProductDate(),
+        ),
+        BlocProvider(
+          create: (context) => FavoritesCubit(
+            FavoritesRepository(FavoritesApiServes(), FavoritesLocalData()),
+          ),
+        ),
+      ],
       child: Scaffold(
         body: CustomScrollView(
           slivers: [
