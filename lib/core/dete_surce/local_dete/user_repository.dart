@@ -25,7 +25,12 @@ class UserRepository {
       Hive.registerAdapter(UserModelAdapter());
     }
 
-    _userBox = await Hive.openBox(Constants.userBox);
+    try {
+      _userBox = await Hive.openBox(Constants.userBox);
+    } catch (e) {
+      await Hive.deleteBoxFromDisk(Constants.userBox);
+      _userBox = await Hive.openBox(Constants.userBox);
+    }
   }
 
   saveUser(UserModel user) async {

@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:matrix_app/features/favorites/cubit/favorites_cubit.dart';
+import 'package:matrix_app/features/favorites/favorites_screen.dart';
 
 class Search extends StatelessWidget {
   const Search({super.key});
@@ -50,7 +53,19 @@ class Search extends StatelessWidget {
                   color: Colors.black,
                   size: 24,
                 ),
-                onPressed: () {},
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (BuildContext _) {
+                        return BlocProvider.value(
+                          value: context.read<FavoritesCubit>(),
+                          child: FavoritesScreen(),
+                        );
+                      },
+                    ),
+                  );
+                },
               ),
             ),
           ],

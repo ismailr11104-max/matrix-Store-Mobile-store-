@@ -1,21 +1,40 @@
 import 'package:equatable/equatable.dart';
+import 'package:hive_ce_flutter/adapters.dart';
 import 'package:matrix_app/features/home/model_prodect/product_specs.dart';
 
+part 'product_model.g.dart';
+
+@HiveType(typeId: 1)
 class ProductModel extends Equatable {
+  @HiveField(0)
   final int id;
+  @HiveField(1)
   final String nameEn;
+  @HiveField(2)
   final String brand;
+  @HiveField(3)
   final String category;
+  @HiveField(4)
   final String categoryId;
+  @HiveField(5)
   final num price;
+  @HiveField(6)
   final num originalPrice;
+  @HiveField(7)
   final num discountPercentage;
+  @HiveField(8)
   final num rating;
+  @HiveField(9)
   final int reviewsCount;
+  @HiveField(10)
   final String imageUrl;
+  @HiveField(11)
   final int stock;
+  @HiveField(12)
   final String descriptionEn;
+  @HiveField(13)
   final ProductSpecs specs;
+  @HiveField(14)
   final int releaseYear;
 
   const ProductModel({
