@@ -9,7 +9,7 @@ import 'package:matrix_app/features/favorites/repo/favorites_repository.dart';
 import 'package:matrix_app/features/home/components/categories_list.dart';
 import 'package:matrix_app/features/home/components/image_promo_carousel.dart';
 import 'package:matrix_app/features/home/components/product_all.dart';
-import 'package:matrix_app/features/home/components/search.dart';
+import 'package:matrix_app/features/home/components/hader_page.dart';
 import 'package:matrix_app/features/home/cubit/home_cubit.dart';
 
 class HomeScreen extends StatelessWidget {
@@ -33,7 +33,7 @@ class HomeScreen extends StatelessWidget {
       child: Scaffold(
         body: CustomScrollView(
           slivers: [
-            const SliverToBoxAdapter(child: SizedBox(height: 64)),
+            const SliverToBoxAdapter(child: SizedBox(height: 48)),
             const Search(),
             const SliverToBoxAdapter(child: SizedBox(height: 12)),
             const ImagePromoCarousel(),
