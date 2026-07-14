@@ -9,6 +9,7 @@ class ApiServesConfig {
   static const String addFavorite = 'api/favorites';
   static String deleteCart(int productId) => '/api/cart/$productId';
   static String deleteFavorite(int productId) => '/api/favorites/$productId';
+  static const String search = '/api/search';
   static const String BaseUrl =
       'https://electronics-store-api-ramg.onrender.com/';
 }
