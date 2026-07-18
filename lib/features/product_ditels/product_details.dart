@@ -5,6 +5,7 @@ import 'package:matrix_app/core/dete_surce/local_dete/cart_local_data.dart';
 import 'package:matrix_app/core/dete_surce/remote_dete/cart/cart_api_service.dart';
 import 'package:matrix_app/core/widgets/favorite_button.dart';
 import 'package:matrix_app/features/cart/cubit/cart_cubit.dart';
+import 'package:matrix_app/features/cart/cubit/cart_injection.dart';
 import 'package:matrix_app/features/cart/repo/cart_repository.dart';
 import 'package:matrix_app/features/favorites/cubit/favorites_cubit.dart';
 import 'package:matrix_app/features/favorites/date/local_date/favorite_local_date.dart';
@@ -22,8 +23,7 @@ class ProductDetails extends StatelessWidget {
     return MultiBlocProvider(
       providers: [
         BlocProvider(
-          create: (context) =>
-              CartCubit(CartRepository(CartApiService(), CartLocalData()), 1),
+          create: (context) => CartInjection.getCubit()
         ),
         BlocProvider(
           create: (context) => FavoritesCubit(
@@ -161,11 +161,12 @@ class ProductDetails extends StatelessWidget {
                               ),
                               child: BlocBuilder<CartCubit, CartState>(
                                 buildWhen: (previous, current) =>
-                                    previous.quantity != current.quantity,
+                                    previous.selectedQuantity !=
+                                    current.selectedQuantity,
                                 builder: (context, state) {
                                   // ✨ تم الإصلاح: الآن يقرأ من الـ state المتغيرة وليس الموديل الثابت
                                   return Text(
-                                    '${state.quantity}',
+                                    '${state.selectedQuantity}',
                                     style: TextStyle(
                                       fontSize: AppSized.sp16,
                                       fontWeight: FontWeight.bold,
@@ -198,7 +199,10 @@ class ProductDetails extends StatelessWidget {
                     height: AppSized.h56,
                     child: ElevatedButton.icon(
                       onPressed: () {
-                        controller.uploadOrUpdateCartDate(productModel.id);
+                        controller.uploadOrUpdateCart(
+                          productId: productModel.id,
+                          quantity: controller.state.selectedQuantity,
+                        );
 
                         ScaffoldMessenger.of(context).showSnackBar(
                           const SnackBar(

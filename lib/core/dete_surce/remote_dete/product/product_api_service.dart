@@ -29,7 +29,7 @@ class ProductsApiService extends BaseApiService {
   }
 
   @override
-  Future<dynamic> getProduct(
+  Future<dynamic>getProduct(
     String endpoint, {
     Map<String, dynamic>? body,
   }) async {

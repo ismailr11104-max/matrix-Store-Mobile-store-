@@ -16,8 +16,10 @@ class ProductCubit extends Cubit<ProductState> {
 
   Future<void> getProductDate() async {
     try {
+      if (isClosed) return;
       emit(state.copyWith(productStatus: RequestStatus.loading));
       final product = await repository.getProduct();
+      if (isClosed) return;
       emit(
         state.copyWith(
           productList: product,
@@ -26,6 +28,7 @@ class ProductCubit extends Cubit<ProductState> {
         ),
       );
     } catch (e) {
+      if (isClosed) return;
       emit(
         state.copyWith(
           productStatus: RequestStatus.error,

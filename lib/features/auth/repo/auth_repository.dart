@@ -6,7 +6,7 @@ import 'package:matrix_app/core/user_model/user_model.dart';
 class AuthRepository {
   AuthRepository(this.apiService);
   ApiService apiService = ApiService();
-  Future<UserModel?> sign_in({
+  Future<UserModel?> signIn({
     required String email,
     required String password,
   }) async {
@@ -14,18 +14,18 @@ class AuthRepository {
       ApiServesConfig.authLogin,
       body: {"email": email, "password": password},
     );
-    UserModel model = UserModel.fromAuthResponse(response, email);
+    UserModel model = UserModel.fromAuthResponse(response, password);
     await _saveUser(model);
     return model;
   }
 
-  Future<void> signUp({
+  Future<UserModel?> signUp({
     required String name,
     required String email,
     required String phone,
     required String password,
   }) async {
-    await apiService.post(
+    final response = await apiService.post(
       ApiServesConfig.authRegister,
       body: {
         "name": name,
@@ -34,6 +34,9 @@ class AuthRepository {
         "password": password,
       },
     );
+    UserModel model = UserModel.fromAuthResponse(response, password);
+    await _saveUser(model);
+    return model;
   }
 
   Future _saveUser(UserModel model) async {

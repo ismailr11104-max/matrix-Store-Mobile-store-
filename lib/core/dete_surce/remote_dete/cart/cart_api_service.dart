@@ -1,10 +1,10 @@
 import 'package:dio/dio.dart';
 import 'package:matrix_app/core/dete_surce/remote_dete/api_serves_config.dart';
 
-import 'cart_dio_config.dart'; // استيراد إعدادات الـ Dio الخاصة بالسلة
+import 'cart_dio_config.dart';
 
 abstract class BaseCartApiService {
-  Future<dynamic> getCartItems();
+  Future<dynamic> getCartItems(String endpoint, {Map<String, dynamic>? body});
   Future<dynamic> uploadOrUpdateCart({
     required int productId,
     required int quantity,
@@ -16,9 +16,15 @@ class CartApiService extends BaseCartApiService {
   final dio = CartDioConfig.cartDioConfig();
 
   @override
-  Future<dynamic> getCartItems() async {
+  Future<dynamic> getCartItems(
+    String endpoint, {
+    Map<String, dynamic>? body,
+  }) async {
     try {
-      final response = await dio.get(ApiServesConfig.Cart);
+      final response = await dio.get(
+        ApiServesConfig.Cart,
+        queryParameters: body,
+      );
       if (response.statusCode! >= 200 && response.statusCode! < 300) {
         return response.data;
       } else {
@@ -31,8 +37,6 @@ class CartApiService extends BaseCartApiService {
     }
   }
 
-  // 2. دالة إضافة أو تحديث كمية منتج في السلة (POST)
-  // تأخذ المعطيات كـ Body بصيغة {"productId": x, "quantity": y} كما طلبت
   @override
   Future<dynamic> uploadOrUpdateCart({
     required int productId,
@@ -55,8 +59,6 @@ class CartApiService extends BaseCartApiService {
     }
   }
 
-  // 3. دالة حذف منتج من السلة (DELETE)
-  // ترسل الـ ID مباشرة في الـ URL ديناميكياً
   @override
   Future<dynamic> deleteCartItem(int productId) async {
     try {
@@ -73,7 +75,6 @@ class CartApiService extends BaseCartApiService {
     }
   }
 
-  // ميثود معالجة أخطاء الـ Dio الموحدة في مشروعك
   void _handlerDioException(DioException e) {
     switch (e.type) {
       case DioExceptionType.connectionTimeout:

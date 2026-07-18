@@ -1,30 +1,20 @@
-import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:matrix_app/core/enum/request_status.dart';
-import 'package:matrix_app/features/cart/cart_model/cart_model.dart';
 import 'package:matrix_app/features/cart/repo/cart_repository.dart';
+
+import '../cart_model/cart_model.dart';
 
 part 'cart_state.dart';
 
 class CartCubit extends Cubit<CartState> {
   final BaseCartRepository repository;
 
-  CartCubit(this.repository, num initialQuantity)
-    : super(CartState(quantity: initialQuantity)) {
-    getCartDate();
+  CartCubit(this.repository) : super(CartState()) {
+    getCartData();
   }
 
-  void incrementQuantity() {
-    emit(state.copyWith(quantity: state.quantity + 1));
-  }
-
-  void decrementQuantity() {
-    if (state.quantity > 1) {
-      emit(state.copyWith(quantity: state.quantity - 1));
-    }
-  }
-
-  Future<void> getCartDate() async {
+  Future<void> getCartData() async {
     try {
       emit(state.copyWith(cartStatus: RequestStatus.loading));
 
@@ -47,14 +37,19 @@ class CartCubit extends Cubit<CartState> {
     }
   }
 
-  Future<void> uploadOrUpdateCartDate(int productId) async {
+  Future<void> uploadOrUpdateCart({
+    required int productId,
+    required int quantity,
+  }) async {
     try {
       emit(state.copyWith(cartStatus: RequestStatus.loading));
+
       await repository.uploadOrUpdateCart(
         productId: productId,
-        quantity: state.quantity.toInt(),
+        quantity: quantity,
       );
-      getCartDate();
+
+      await getCartData();
     } catch (e) {
       emit(
         state.copyWith(
@@ -65,37 +60,13 @@ class CartCubit extends Cubit<CartState> {
     }
   }
 
-  Future<void> deleteCartItemDate(int productId) async {
+  Future<void> deleteCartItem(int productId) async {
     try {
-      if (state.cartModel == null) return;
-
       emit(state.copyWith(cartStatus: RequestStatus.loading));
+
       await repository.deleteCartItem(productId);
 
-      final updatedItems = state.cartModel!.items
-          .where((element) => element.productId != productId)
-          .toList();
-
-      num newTotalPrice = 0;
-      num newTotalItems = 0;
-      for (var item in updatedItems) {
-        newTotalPrice += (item.product.price * item.quantity);
-        newTotalItems += item.quantity;
-      }
-
-      final updatedCartModel = CartModel(
-        items: updatedItems,
-        totalItems: newTotalItems,
-        totalPrice: newTotalPrice,
-      );
-
-      emit(
-        state.copyWith(
-          cartModel: updatedCartModel,
-          cartStatus: RequestStatus.laded,
-          errorMessage: null,
-        ),
-      );
+      await getCartData();
     } catch (e) {
       emit(
         state.copyWith(
@@ -103,6 +74,16 @@ class CartCubit extends Cubit<CartState> {
           errorMessage: e.toString(),
         ),
       );
+    }
+  }
+
+  void incrementQuantity() {
+    emit(state.copyWith(selectedQuantity: state.selectedQuantity + 1));
+  }
+
+  void decrementQuantity() {
+    if (state.selectedQuantity > 1) {
+      emit(state.copyWith(selectedQuantity: state.selectedQuantity - 1));
     }
   }
 }

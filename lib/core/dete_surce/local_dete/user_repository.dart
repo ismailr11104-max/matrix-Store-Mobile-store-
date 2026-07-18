@@ -18,34 +18,36 @@ class UserRepository {
     return _userBox!;
   }
 
-  init() async {
+  Future<void> init() async {
     await Hive.initFlutter();
 
     if (!Hive.isAdapterRegistered(0)) {
       Hive.registerAdapter(UserModelAdapter());
     }
 
-    try {
-      _userBox = await Hive.openBox(Constants.userBox);
-    } catch (e) {
-      await Hive.deleteBoxFromDisk(Constants.userBox);
-      _userBox = await Hive.openBox(Constants.userBox);
-    }
+    _userBox = await Hive.openBox(Constants.userBox);
   }
 
-  saveUser(UserModel user) async {
+  Future<void> saveUser(UserModel user) async {
     await userBox.put(Constants.currentUser, user);
   }
 
   UserModel? getUser() => userBox.get(Constants.currentUser);
 
-  updateUser({String? name, String? email, String? password}) async {
+  updateUser({
+    String? name,
+    String? email,
+    String? phone,
+    String? password,
+    String? countryName,
+  }) async {
     final UserModel? user = getUser();
 
     if (user != null) {
       final updatedUser = user.copyWith(
         name: name,
         email: email,
+        phone: phone,
         password: password,
       );
 
@@ -78,6 +80,7 @@ class UserRepository {
     required String name,
     required String email,
     required String password,
+    required String phone,
   }) async {
     final user = getUser();
 
@@ -85,7 +88,12 @@ class UserRepository {
       return "User Already Exists Please Login";
     }
 
-    final newUser = UserModel(name: name, email: email, password: password);
+    final newUser = UserModel(
+      name: name,
+      email: email,
+      password: password,
+      phone: phone,
+    );
 
     await saveUser(newUser);
     return null;

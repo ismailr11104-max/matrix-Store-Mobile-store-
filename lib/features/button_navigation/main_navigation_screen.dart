@@ -2,18 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:matrix_app/core/constants/app_sized.dart';
-import 'package:matrix_app/core/dete_surce/local_dete/cart_local_data.dart';
-import 'package:matrix_app/core/dete_surce/remote_dete/cart/cart_api_service.dart';
 import 'package:matrix_app/features/cart/cart_screen.dart';
-import 'package:matrix_app/features/cart/cubit/cart_cubit.dart';
-import 'package:matrix_app/features/cart/repo/cart_repository.dart';
+import 'package:matrix_app/features/cart/cubit/cart_injection.dart';
 import 'package:matrix_app/features/category/category_screen.dart';
 import 'package:matrix_app/features/home/home_screen.dart';
+import 'package:matrix_app/features/profile_screen/cubit/profile_injection.dart';
 import 'package:matrix_app/features/profile_screen/profile_screen.dart';
 
 class MainNavigationScreen extends StatefulWidget {
   const MainNavigationScreen({super.key});
-
   @override
   State<MainNavigationScreen> createState() => _MainNavigationScreenState();
 }
@@ -25,11 +22,13 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
     const HomeScreen(),
     const CategoryScreen(),
     BlocProvider(
-      create: (context) =>
-          CartCubit(CartRepository(CartApiService(), CartLocalData()), 1),
+      create: (context) => CartInjection.getCubit(),
       child: const CartScreen(),
     ),
-    const ProfileScreen(),
+    BlocProvider(
+      create: (context) => ProfileInjection.getCubit(),
+      child: ProfileScreen(),
+    ),
   ];
 
   @override

@@ -26,10 +26,6 @@ class UserModel {
     this.refreshToken,
   });
 
-  Map<String, dynamic> toMap() {
-    return {'name': name, 'email': email, 'phone': phone, 'password': password};
-  }
-
   UserModel copyWith({
     String? name,
     String? email,
@@ -48,16 +44,47 @@ class UserModel {
     );
   }
 
-  factory UserModel.fromAuthResponse(Map<String, dynamic> json, String email) {
+  factory UserModel.fromProfile(Map<String, dynamic> map) {
+    final userData = map['user'] as Map<String, dynamic>? ?? map;
     return UserModel(
-      email: email,
-      accessToken: json['accessToken'],
-      refreshToken: json['refreshToken'],
+      name: userData['name'] as String?,
+      email: userData['email'] as String?,
+      phone: userData['phone'] as String?,
+      accessToken: map['accessToken'] as String?, // جلب التوكن الصحيح
+      refreshToken: map['refreshToken'] as String?,
     );
   }
 
   @override
   String toString() {
     return 'UserModel{name: $name, email: $email, phone: $phone, password: $password}';
+  }
+
+  Map<String, dynamic> toMap() {
+    return {
+      'name': name,
+      'email': email,
+      'phone': phone,
+      'password': password,
+      'accessToken': accessToken,
+      'refreshToken': refreshToken,
+    };
+  }
+
+  factory UserModel.fromAuthResponse(
+    Map<String, dynamic> json,
+    String password,
+  ) {
+    final userData = json['user'] as Map<String, dynamic>? ?? json;
+    return UserModel(
+      name: userData['name'] as String?,
+      email: userData['email'] as String?,
+      phone:
+          userData['phone']
+              as String?, // السيرفر في البوستمان لا يعيد الهاتف، سيصبح null تلقائياً
+      password: password, // لتخزينه محلياً عند الحاجة
+      accessToken: json['accessToken'] as String?, // جلب التوكن الصحيح
+      refreshToken: json['refreshToken'] as String?,
+    );
   }
 }

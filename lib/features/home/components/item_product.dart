@@ -134,8 +134,9 @@ class ItemProduct extends StatelessWidget {
                 height: 40,
                 child: ElevatedButton(
                   onPressed: () {
-                    context.read<CartCubit>().uploadOrUpdateCartDate(
-                      productModel.id,
+                    context.read<CartCubit>().uploadOrUpdateCart(
+                      productId: productModel.id,
+                      quantity: 1,
                     );
                     ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(

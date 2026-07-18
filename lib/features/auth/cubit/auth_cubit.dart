@@ -11,12 +11,12 @@ class AuthCubit extends Cubit<AuthState> {
   AuthCubit(this.authRepository) : super(AuthState());
   AuthRepository authRepository;
 
-  Future<void> sign_in(String email, String password) async {
+  Future<UserModel?> sign_in(String email, String password) async {
     try {
       emit(
         state.copyWith(authStatus: RequestStatus.loading, errorMessage: null),
       );
-      final userModel = await authRepository.sign_in(
+      final userModel = await authRepository.signIn(
         email: email,
         password: password,
       );
