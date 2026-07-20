@@ -54,16 +54,13 @@ class ProfileRepository extends BaseUserRepository {
         body: {"name": name, "email": email, "phone": phone},
       );
 
-      final updatedUser = UserModel.fromProfile(result);
+      await UserRepository().updateUser(name: name, email: email, phone: phone);
+      final localUser = UserRepository().getUser();
+      if (localUser != null) {
+        return localUser;
+      }
 
-      // تحديث البيانات محلياً داخل قاعدة بيانات Hive لتنعكس في التطبيق
-      await UserRepository().updateUser(
-        name: updatedUser.name,
-        email: updatedUser.email,
-        phone: updatedUser.phone,
-      );
-
-      return updatedUser;
+      throw Exception("Failed to retrieve updated user from local storage");
     } catch (e) {
       throw Exception("Failed To Update User Data");
     }

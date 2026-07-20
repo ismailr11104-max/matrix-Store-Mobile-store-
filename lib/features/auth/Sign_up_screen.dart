@@ -22,7 +22,7 @@ class SignUpScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => AuthCubit(AuthRepository(ApiService())),
+      create: (context) => AuthCubit(AuthRepository(AuthApiService())),
       child: Scaffold(
         backgroundColor: Colors.white,
         body: SafeArea(

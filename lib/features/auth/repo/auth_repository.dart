@@ -5,7 +5,7 @@ import 'package:matrix_app/core/user_model/user_model.dart';
 
 class AuthRepository {
   AuthRepository(this.apiService);
-  ApiService apiService = ApiService();
+  AuthApiService apiService = AuthApiService();
   Future<UserModel?> signIn({
     required String email,
     required String password,

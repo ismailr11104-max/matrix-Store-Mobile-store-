@@ -16,6 +16,8 @@ class UserModel {
   final String? accessToken;
   @HiveField(5)
   final String? refreshToken;
+  @HiveField(6)
+  final String? imageUser;
 
   UserModel({
     this.name,
@@ -24,6 +26,7 @@ class UserModel {
     this.password,
     this.accessToken,
     this.refreshToken,
+    this.imageUser,
   });
 
   UserModel copyWith({
@@ -33,6 +36,7 @@ class UserModel {
     String? password,
     String? accessToken,
     String? refreshToken,
+    String? imageUser,
   }) {
     return UserModel(
       name: name ?? this.name,
@@ -41,17 +45,19 @@ class UserModel {
       password: password ?? this.password,
       accessToken: accessToken ?? this.accessToken,
       refreshToken: refreshToken ?? this.refreshToken,
+      imageUser: imageUser ?? this.imageUser,
     );
   }
 
   factory UserModel.fromProfile(Map<String, dynamic> map) {
     final userData = map['user'] as Map<String, dynamic>? ?? map;
     return UserModel(
-      name: userData['name'] as String?,
-      email: userData['email'] as String?,
-      phone: userData['phone'] as String?,
-      accessToken: map['accessToken'] as String?, // جلب التوكن الصحيح
-      refreshToken: map['refreshToken'] as String?,
+      name: userData['name'],
+      email: userData['email'],
+      phone: userData['phone'],
+      accessToken: map['accessToken'],
+      refreshToken: map['refreshToken'],
+      imageUser: map['imageUser'],
     );
   }
 
@@ -63,6 +69,7 @@ class UserModel {
   Map<String, dynamic> toMap() {
     return {
       'name': name,
+      'imageUser': imageUser,
       'email': email,
       'phone': phone,
       'password': password,
@@ -79,12 +86,11 @@ class UserModel {
     return UserModel(
       name: userData['name'] as String?,
       email: userData['email'] as String?,
-      phone:
-          userData['phone']
-              as String?, // السيرفر في البوستمان لا يعيد الهاتف، سيصبح null تلقائياً
-      password: password, // لتخزينه محلياً عند الحاجة
-      accessToken: json['accessToken'] as String?, // جلب التوكن الصحيح
+      phone: userData['phone'] as String?,
+      password: password,
+      accessToken: json['accessToken'] as String?,
       refreshToken: json['refreshToken'] as String?,
+      imageUser: json['imageUser'],
     );
   }
 }

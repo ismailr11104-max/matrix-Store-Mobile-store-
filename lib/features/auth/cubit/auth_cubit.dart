@@ -25,6 +25,7 @@ class AuthCubit extends Cubit<AuthState> {
           state.copyWith(authStatus: RequestStatus.laded, userModel: userModel),
         );
         await PrefManger().setBool("is_login", true);
+        await PrefManger().setBool("onboarding_completed", true);
       }
     } catch (e) {
       emit(
@@ -34,6 +35,7 @@ class AuthCubit extends Cubit<AuthState> {
         ),
       );
     }
+    return null;
   }
 
   Future<void> signUp({
@@ -56,6 +58,7 @@ class AuthCubit extends Cubit<AuthState> {
 
       emit(state.copyWith(authStatus: RequestStatus.laded));
       await PrefManger().setBool("is_login", true);
+      await PrefManger().setBool("onboarding_completed", true);
     } catch (e) {
       emit(
         state.copyWith(

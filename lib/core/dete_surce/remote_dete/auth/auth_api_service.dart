@@ -5,7 +5,7 @@ abstract class BaseApiService {
   Future<dynamic> post(String endpoint, {Map<String, dynamic>? body});
 }
 
-class ApiService extends BaseApiService {
+class AuthApiService extends BaseApiService {
   final dio = AuthDioConfig.authCreateDio();
 
   @override
@@ -22,6 +22,19 @@ class ApiService extends BaseApiService {
       _handlerDioException(e);
     } catch (e) {
       throw Exception("Failed To Lode Data");
+    }
+  }
+
+  Future<String?> refreshToken(String refreshToken) async {
+    try {
+      final response = await dio.post(
+        '/auth/refresh',
+        data: {"refresh_token": refreshToken},
+      );
+
+      return response.data["access_token"];
+    } catch (e) {
+      return null;
     }
   }
 

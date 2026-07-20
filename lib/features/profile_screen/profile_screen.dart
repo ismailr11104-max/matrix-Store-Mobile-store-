@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -50,7 +52,6 @@ class ProfileScreen extends StatelessWidget {
             );
           }
           final user = state.userModel;
-          final controller = context.read<ProfileCubit>();
           return SingleChildScrollView(
             child: Padding(
               padding: EdgeInsets.symmetric(horizontal: AppSized.w24),
@@ -70,9 +71,10 @@ class ProfileScreen extends StatelessWidget {
                       child: CircleAvatar(
                         radius: AppSized.r60,
                         backgroundColor: Colors.grey,
-                        backgroundImage: const AssetImage(
-                          'assets/images/Banner3.png',
-                        ),
+                        backgroundImage: state.userModel?.imageUser != null
+                            ? FileImage(File(state.userModel!.imageUser!))
+                                  as ImageProvider
+                            : const AssetImage('assets/images/path_ismail.png'),
                       ),
                     ),
                   ),
@@ -104,8 +106,11 @@ class ProfileScreen extends StatelessWidget {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (BuildContext context) {
-                            return EditProfile();
+                          builder: (BuildContext _) {
+                            return BlocProvider.value(
+                              value: context.read<ProfileCubit>(),
+                              child: EditProfile(),
+                            );
                           },
                         ),
                       );

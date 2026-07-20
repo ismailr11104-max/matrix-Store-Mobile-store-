@@ -26,7 +26,7 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
       child: const CartScreen(),
     ),
     BlocProvider(
-      create: (context) => ProfileInjection.getCubit(),
+      create: (context) => ProfileInjection.getCubit()..getUserProfile(),
       child: ProfileScreen(),
     ),
   ];

@@ -1,24 +1,49 @@
+import 'dart:io';
+
 import 'package:equatable/equatable.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:matrix_app/core/dete_surce/local_dete/user_repository.dart';
 import 'package:matrix_app/core/enum/request_status.dart';
 import 'package:matrix_app/core/user_model/user_model.dart';
 import 'package:matrix_app/features/profile_screen/rope/profile_repository.dart';
+import 'package:path_provider/path_provider.dart';
 
 part 'profile_state.dart';
 
 class ProfileCubit extends Cubit<ProfileState> {
   final BaseUserRepository repository;
 
-  ProfileCubit(this.repository) : super(const ProfileState()) {
+  ProfileCubit(this.repository) : super(ProfileState()) {
     getUserProfile();
   }
 
   Future<void> getUserProfile() async {
-    emit(
-      state.copyWith(profileStatus: RequestStatus.loading, errorMessage: null),
-    );
+    if (state.userModel != null && state.profileStatus == RequestStatus.laded) {
+      return;
+    }
+    if (state.userModel == null) {
+      emit(
+        state.copyWith(
+          profileStatus: RequestStatus.loading,
+          errorMessage: null,
+        ),
+      );
+    }
     try {
-      final user = await repository.getProfile();
+      // 1. جلب البيانات من السيرفر
+      var user = await repository.getProfile();
+
+      // 2. 🟢 جلب الصورة المحلية المخزنة في Hive ودمجها
+      final localUser = UserRepository().getUser();
+      if (localUser?.imageUser != null) {
+        user = user.copyWith(imageUser: localUser!.imageUser);
+      }
+
+      state.userNameController.text = user.name ?? '';
+      state.emailController.text = user.email ?? '';
+      state.phoneController.text = user.phone ?? '';
       emit(state.copyWith(userModel: user, profileStatus: RequestStatus.laded));
     } catch (e) {
       emit(
@@ -30,26 +55,92 @@ class ProfileCubit extends Cubit<ProfileState> {
     }
   }
 
-  // دالة تعديل البروفايل
-  Future<void> editUserProfile({
-    required String name,
-    required String phone,
-  }) async {
+  Future<void> editUserProfile() async {
+    if (state.formKey.currentState?.validate() ?? false) {
+      emit(
+        state.copyWith(
+          profileStatus: RequestStatus.loading,
+          errorMessage: null,
+        ),
+      );
+      try {
+        // 1. تعديل البيانات في السيرفر أولاً
+        var updatedUser = await repository.editProfile(
+          name: state.userNameController.text.trim(),
+          phone: state.phoneController.text.trim(),
+          email: state.emailController.text.trim(),
+        );
+
+        // 2. جلب الصورة المحلية (إن وجدت) لكي لا تضيع أثناء التحديث
+        final localUser = UserRepository().getUser();
+        if (localUser?.imageUser != null) {
+          updatedUser = updatedUser.copyWith(imageUser: localUser!.imageUser);
+        }
+
+        // 3. ✅ حفظ الكائن المحدث كاملاً في الـ Hive دائماً (سواء توجد صورة أم لا)
+        await UserRepository().saveUser(updatedUser);
+
+        state.userNameController.text = updatedUser.name ?? '';
+        state.emailController.text = updatedUser.email ?? '';
+        state.phoneController.text = updatedUser.phone ?? '';
+
+        emit(
+          state.copyWith(
+            userModel: updatedUser,
+            profileStatus: RequestStatus.laded, // سيقوم بعمل الـ Pop في الواجهة
+          ),
+        );
+      } catch (e) {
+        emit(
+          state.copyWith(
+            profileStatus: RequestStatus.error,
+            errorMessage: e.toString(),
+          ),
+        );
+      }
+    }
+  }
+
+  void savaImage(XFile file) async {
+    try {
+      final appDir = await getApplicationDocumentsDirectory();
+      final newImage = await File(
+        file.path,
+      ).copy('${appDir.path}/${file.name}');
+
+      // ✅ تحديث الصورة في الـ Hive
+      await UserRepository().updateUser(imageUser: newImage.path);
+
+      // ✅ جلب الكائن المحدث بالكامل من الـ Hive لتحديث الواجهة فوراً
+      final updatedUser = UserRepository().getUser();
+      if (updatedUser != null) {
+        emit(
+          state.copyWith(
+            userModel: updatedUser,
+            profileStatus: RequestStatus.laded, // لتحديث الحالة بشكل مستقر
+          ),
+        );
+      }
+    } catch (e) {
+      emit(
+        state.copyWith(
+          profileStatus: RequestStatus.error,
+          errorMessage: "Failed to save image: ${e.toString()}",
+        ),
+      );
+    }
+  }
+
+  Future<void> deleteUserProfile() async {
     emit(
       state.copyWith(profileStatus: RequestStatus.loading, errorMessage: null),
     );
     try {
-      final updatedUser = await repository.editProfile(
-        name: name,
-        phone: phone,
-        email: '',
-      );
-      emit(
-        state.copyWith(
-          userModel: updatedUser,
-          profileStatus: RequestStatus.laded,
-        ),
-      );
+      await repository.deleteProfile();
+      state.userNameController.clear();
+      state.emailController.clear();
+      state.phoneController.clear();
+      emit(state.copyWith(profileStatus: RequestStatus.laded, userModel: null));
     } catch (e) {
       emit(
         state.copyWith(
@@ -60,21 +151,11 @@ class ProfileCubit extends Cubit<ProfileState> {
     }
   }
 
-  // دالة حذف البروفايل
-  Future<void> deleteUserProfile() async {
-    emit(
-      state.copyWith(profileStatus: RequestStatus.loading, errorMessage: null),
-    );
-    try {
-      await repository.deleteProfile();
-      emit(state.copyWith(profileStatus: RequestStatus.laded, userModel: null));
-    } catch (e) {
-      emit(
-        state.copyWith(
-          profileStatus: RequestStatus.error,
-          errorMessage: e.toString(),
-        ),
-      );
-    }
+  @override
+  Future<void> close() {
+    state.userNameController.dispose();
+    state.emailController.dispose();
+    state.phoneController.dispose();
+    return super.close();
   }
 }

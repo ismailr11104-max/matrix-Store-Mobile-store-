@@ -36,16 +36,16 @@ class UserRepository {
 
   updateUser({
     String? name,
+    String? imageUser,
     String? email,
     String? phone,
     String? password,
-    String? countryName,
   }) async {
     final UserModel? user = getUser();
-
     if (user != null) {
       final updatedUser = user.copyWith(
         name: name,
+        imageUser: imageUser,
         email: email,
         phone: phone,
         password: password,
