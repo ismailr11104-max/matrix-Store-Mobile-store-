@@ -11,31 +11,56 @@ abstract class BaseProductRepository {
 class ProductRepository extends BaseProductRepository {
   final ProductsApiService productsApiService;
   ProductRepository(this.productsApiService);
+  List<ProductModel>? _products;
+  List<CategoryModel>? _categories;
+
+  @override
+  Future<List<ProductModel>> getProduct() async {
+    if (_products != null) {
+      return _products!;
+    }
+    final result = await productsApiService.getProduct(
+      ApiServesConfig.products,
+    );
+    List<ProductModel> products = [];
+    if (result is Map && result['products'] is List) {
+      products = (result['products'] as List)
+          .map((item) => ProductModel.fromJson(item))
+          .toList();
+    } else if (result is List) {
+      products = result.map((item) => ProductModel.fromJson(item)).toList();
+    } else {
+      throw Exception("Unexpected products format");
+    }
+    _products = products;
+    return products;
+  }
 
   @override
   Future<List<CategoryModel>> getCategory() async {
+    if (_categories != null) {
+      return _categories!;
+    }
     final result = await productsApiService.getCategory(
       ApiServesConfig.category,
     );
     if (result is List) {
-      return result.map((e) => CategoryModel.fromJson(e)).toList();
+      final categories = result
+          .map((item) => CategoryModel.fromJson(item))
+          .toList();
+
+      _categories = categories;
+
+      return categories;
     }
-    throw Exception("Unexpected data format");
+    throw Exception("Unexpected categories format");
   }
 
-  @override
-  Future<List<ProductModel>> getProduct() async {
-    final result = await productsApiService.getProduct(
-      ApiServesConfig.products,
-    );
-    if (result is Map && result.containsKey('products')) {
-      final productsData = result['products'];
-      if (productsData is List) {
-        return productsData.map((e) => ProductModel.fromJson(e)).toList();
-      }
-    } else if (result is List) {
-      return result.map((e) => ProductModel.fromJson(e)).toList();
-    }
-    throw Exception("Unexpected data format");
+  void clearProductCache() {
+    _products = null;
+  }
+
+  void clearCategoryCache() {
+    _categories = null;
   }
 }

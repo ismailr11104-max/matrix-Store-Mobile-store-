@@ -19,6 +19,7 @@ class AppSized {
   static final h60 = 60.h;
   static final h80 = 80.h;
   static final h100 = 100.h;
+  static final h120 = 120.h;
   static final h140 = 140.h;
   static final h200 = 200.h;
   static final h240 = 240.h;
@@ -38,6 +39,7 @@ class AppSized {
   static final w42 = 42.w;
   static final w48 = 48.w;
   static final w100 = 100.w;
+  static final w120 = 120.w;
   static final w140 = 140.w;
   static final w168 = 168.w;
   static final w200 = 200.w;
