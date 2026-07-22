@@ -4,8 +4,12 @@ import 'package:matrix_app/core/dete_surce/remote_dete/auth/auth_api_service.dar
 import 'package:matrix_app/core/user_model/user_model.dart';
 
 class AuthRepository {
-  AuthRepository(this.apiService);
-  AuthApiService apiService = AuthApiService();
+  final AuthApiService apiService;
+
+  AuthRepository(
+    this.apiService,
+  ); // 👈 ربط الـ apiService الممرر بـ final field
+
   Future<UserModel?> signIn({
     required String email,
     required String password,

@@ -20,9 +20,6 @@ class ProfileCubit extends Cubit<ProfileState> {
   }
 
   Future<void> getUserProfile() async {
-    if (state.userModel != null && state.profileStatus == RequestStatus.laded) {
-      return;
-    }
     if (state.userModel == null) {
       emit(
         state.copyWith(
@@ -32,10 +29,7 @@ class ProfileCubit extends Cubit<ProfileState> {
       );
     }
     try {
-      // 1. جلب البيانات من السيرفر
       var user = await repository.getProfile();
-
-      // 2. 🟢 جلب الصورة المحلية المخزنة في Hive ودمجها
       final localUser = UserRepository().getUser();
       if (localUser?.imageUser != null) {
         user = user.copyWith(imageUser: localUser!.imageUser);
@@ -64,30 +58,19 @@ class ProfileCubit extends Cubit<ProfileState> {
         ),
       );
       try {
-        // 1. تعديل البيانات في السيرفر أولاً
-        var updatedUser = await repository.editProfile(
+        final updatedUser = await repository.editProfile(
           name: state.userNameController.text.trim(),
           phone: state.phoneController.text.trim(),
           email: state.emailController.text.trim(),
         );
 
-        // 2. جلب الصورة المحلية (إن وجدت) لكي لا تضيع أثناء التحديث
-        final localUser = UserRepository().getUser();
-        if (localUser?.imageUser != null) {
-          updatedUser = updatedUser.copyWith(imageUser: localUser!.imageUser);
-        }
-
-        // 3. ✅ حفظ الكائن المحدث كاملاً في الـ Hive دائماً (سواء توجد صورة أم لا)
-        await UserRepository().saveUser(updatedUser);
-
         state.userNameController.text = updatedUser.name ?? '';
         state.emailController.text = updatedUser.email ?? '';
         state.phoneController.text = updatedUser.phone ?? '';
-
         emit(
           state.copyWith(
             userModel: updatedUser,
-            profileStatus: RequestStatus.laded, // سيقوم بعمل الـ Pop في الواجهة
+            profileStatus: RequestStatus.laded,
           ),
         );
       } catch (e) {
@@ -108,16 +91,13 @@ class ProfileCubit extends Cubit<ProfileState> {
         file.path,
       ).copy('${appDir.path}/${file.name}');
 
-      // ✅ تحديث الصورة في الـ Hive
       await UserRepository().updateUser(imageUser: newImage.path);
-
-      // ✅ جلب الكائن المحدث بالكامل من الـ Hive لتحديث الواجهة فوراً
       final updatedUser = UserRepository().getUser();
       if (updatedUser != null) {
         emit(
           state.copyWith(
             userModel: updatedUser,
-            profileStatus: RequestStatus.laded, // لتحديث الحالة بشكل مستقر
+            profileStatus: RequestStatus.laded,
           ),
         );
       }

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:matrix_app/core/constants/app_sized.dart';
+import 'package:matrix_app/core/dete_surce/remote_dete/api_dio_config.dart';
 import 'package:matrix_app/core/dete_surce/remote_dete/auth/auth_api_service.dart';
 import 'package:matrix_app/core/enum/request_status.dart';
 import 'package:matrix_app/core/widgets/custom_text_from_field.dart';
@@ -19,7 +20,8 @@ class SignInScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => AuthCubit(AuthRepository(AuthApiService())),
+      create: (context) =>
+          AuthCubit(AuthRepository(AuthApiService(ApiDioConfig.createDio()))),
       child: Scaffold(
         backgroundColor: Colors.white,
         body: SafeArea(

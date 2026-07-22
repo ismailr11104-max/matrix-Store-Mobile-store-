@@ -8,8 +8,7 @@ class UserRepository {
   static final _instance = UserRepository._internal();
 
   factory UserRepository() => _instance;
-
-  late Box<UserModel>? _userBox;
+  Box<UserModel>? _userBox;
 
   Box<UserModel> get userBox {
     if (_userBox == null) {
@@ -34,6 +33,28 @@ class UserRepository {
 
   UserModel? getUser() => userBox.get(Constants.currentUser);
 
+  Future<void> updateTokens({
+    required String accessToken,
+    String? refreshToken,
+  }) async {
+    final user = getUser();
+    if (user != null) {
+      final updatedUser = user.copyWith(
+        accessToken: accessToken,
+        refreshToken: refreshToken ?? user.refreshToken,
+      );
+      await saveUser(updatedUser);
+    }
+  }
+
+  String? getAccessToken() {
+    return getUser()?.accessToken;
+  }
+
+  String? getRefreshToken() {
+    return getUser()?.refreshToken;
+  }
+
   updateUser({
     String? name,
     String? imageUser,
@@ -55,11 +76,11 @@ class UserRepository {
     }
   }
 
-  delete() async {
+  Future<void> delete() async {
     await userBox.delete(Constants.currentUser);
   }
 
-  clearAll() async {
+  Future<void> clearAll() async {
     await userBox.clear();
   }
 

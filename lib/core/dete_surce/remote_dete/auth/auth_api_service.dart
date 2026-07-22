@@ -1,61 +1,94 @@
 import 'package:dio/dio.dart';
-import 'package:matrix_app/core/dete_surce/remote_dete/auth/auth_dio_config.dart';
+import 'package:matrix_app/core/dete_surce/remote_dete/api_dio_config.dart';
+import 'package:matrix_app/core/dete_surce/remote_dete/api_serves_config.dart';
 
 abstract class BaseApiService {
   Future<dynamic> post(String endpoint, {Map<String, dynamic>? body});
 }
 
 class AuthApiService extends BaseApiService {
-  final dio = AuthDioConfig.authCreateDio();
-
+  final Dio dio;
+  AuthApiService([Dio? customDio])
+    : dio = customDio ?? ApiDioConfig.createDio();
   @override
   Future<dynamic> post(String endpoint, {Map<String, dynamic>? body}) async {
     try {
       final response = await dio.post(endpoint, data: body);
       final responseBody = response.data as Map<String, dynamic>;
+
       if (response.statusCode! >= 200 && response.statusCode! < 300) {
         return responseBody;
       } else {
-        return Exception(responseBody["message"] ?? "Failed To Lode Data");
+        throw responseBody["message"] ?? "Failed to load data";
       }
     } on DioException catch (e) {
       _handlerDioException(e);
     } catch (e) {
-      throw Exception("Failed To Lode Data");
+      if (e is String) rethrow;
+      throw e.toString().replaceFirst('Exception: ', '');
     }
   }
 
-  Future<String?> refreshToken(String refreshToken) async {
+  Future<Map<String, String>?> refreshToken(String refreshToken) async {
     try {
-      final response = await dio.post(
-        '/auth/refresh',
-        data: {"refresh_token": refreshToken},
+      final refreshDio = Dio(
+        BaseOptions(
+          baseUrl: ApiServesConfig.BaseUrl,
+          headers: {
+            "accept": "application/json",
+            "Content-Type": "application/json",
+          },
+        ),
       );
 
-      return response.data["access_token"];
+      final response = await refreshDio.post(
+        ApiServesConfig.authRefresh,
+        data: {"refreshToken": refreshToken},
+      );
+
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        final data = response.data as Map<String, dynamic>;
+        final newAccessToken = data["accessToken"];
+        final newRefreshToken = data["refreshToken"];
+
+        if (newAccessToken != null) {
+          return {
+            "accessToken": newAccessToken,
+            if (newRefreshToken != null) "refreshToken": newRefreshToken,
+          };
+        }
+      }
+      return null;
     } catch (e) {
       return null;
     }
   }
 
   void _handlerDioException(DioException e) {
+    if (e.response?.data != null && e.response?.data is Map) {
+      final serverMessage =
+          e.response?.data['message'] ?? e.response?.data['error'];
+      if (serverMessage != null) {
+        throw serverMessage.toString();
+      }
+    }
+
     switch (e.type) {
       case DioExceptionType.connectionTimeout:
-        throw Exception('Connection timeout - Please check your internet');
+        throw 'Connection timeout - Please check your internet';
       case DioExceptionType.sendTimeout:
-        throw Exception('Send timeout - Please try again');
+        throw 'Send timeout - Please try again';
       case DioExceptionType.receiveTimeout:
-        throw Exception('Receive timeout - Server took too long to respond');
+        throw 'Receive timeout - Server took too long to respond';
       case DioExceptionType.badResponse:
         final statusCode = e.response?.statusCode;
-        final message = e.response?.data?['message'] ?? 'Failed to load news';
-        throw Exception('Server error ($statusCode): $message');
+        throw 'Server error ($statusCode): Failed to load data';
       case DioExceptionType.cancel:
-        throw Exception('Request was cancelled');
+        throw 'Request was cancelled';
       case DioExceptionType.connectionError:
-        throw Exception('No internet connection');
+        throw 'No internet connection';
       default:
-        throw Exception('Failed to load news');
+        throw 'Failed to load data';
     }
   }
 }

@@ -11,6 +11,7 @@ abstract class BaseUserRepository {
     required String email,
     required String phone,
   });
+
   Future<void> deleteProfile();
 }
 
@@ -22,10 +23,18 @@ class ProfileRepository extends BaseUserRepository {
   @override
   Future<UserModel> getProfile() async {
     try {
-      final Map<String, dynamic> result = await userApiServes.getProfile(
-        ApiServesConfig.authMy,
+      final result = await userApiServes.getProfile(ApiServesConfig.authMy);
+
+      final localUser = UserRepository().getUser();
+
+      final updatedUser = UserModel.fromProfile(
+        result,
+        existingUser: localUser,
       );
-      return UserModel.fromProfile(result);
+
+      await UserRepository().saveUser(updatedUser);
+
+      return updatedUser;
     } catch (e) {
       throw Exception("Failed To Load User Data");
     }
@@ -35,7 +44,6 @@ class ProfileRepository extends BaseUserRepository {
   Future<void> deleteProfile() async {
     try {
       await userApiServes.deleteProfile(ApiServesConfig.authMy);
-      // حذف بيانات المستخدم محلياً بعد حذف الحساب من السيرفر
       await UserRepository().delete();
     } catch (e) {
       throw Exception("Failed To Delete User Account");
@@ -54,13 +62,16 @@ class ProfileRepository extends BaseUserRepository {
         body: {"name": name, "email": email, "phone": phone},
       );
 
-      await UserRepository().updateUser(name: name, email: email, phone: phone);
       final localUser = UserRepository().getUser();
-      if (localUser != null) {
-        return localUser;
-      }
 
-      throw Exception("Failed to retrieve updated user from local storage");
+      final updatedUser = UserModel.fromProfile(
+        result,
+        existingUser: localUser,
+      );
+
+      await UserRepository().saveUser(updatedUser);
+
+      return updatedUser;
     } catch (e) {
       throw Exception("Failed To Update User Data");
     }

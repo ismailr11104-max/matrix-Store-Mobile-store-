@@ -1,7 +1,6 @@
 import 'package:dio/dio.dart';
+import 'package:matrix_app/core/dete_surce/remote_dete/api_dio_config.dart';
 import 'package:matrix_app/core/dete_surce/remote_dete/api_serves_config.dart';
-import 'package:matrix_app/core/dete_surce/remote_dete/auth/auth_dio_config.dart';
-import 'package:matrix_app/core/dete_surce/remote_dete/interceptor/auth_interceptor.dart';
 
 abstract class BaseApiService {
   Future<dynamic> getProfile(String endpoint, {Map<String, dynamic>? body});
@@ -10,8 +9,7 @@ abstract class BaseApiService {
 }
 
 class UserApiServes extends BaseApiService {
-  final Dio dio = AuthDioConfig.authCreateDio()
-    ..interceptors.add(AuthInterceptor());
+  final Dio dio = ApiDioConfig.createDio();
   @override
   Future<dynamic> getProfile(
     String endpoint, {

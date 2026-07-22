@@ -49,15 +49,19 @@ class UserModel {
     );
   }
 
-  factory UserModel.fromProfile(Map<String, dynamic> map) {
-    final userData = map['user'] as Map<String, dynamic>? ?? map;
+  factory UserModel.fromProfile(
+    Map<String, dynamic> json, {
+    UserModel? existingUser,
+  }) {
     return UserModel(
-      name: userData['name'],
-      email: userData['email'],
-      phone: userData['phone'],
-      accessToken: map['accessToken'],
-      refreshToken: map['refreshToken'],
-      imageUser: map['imageUser'],
+      name: json['name'] ?? existingUser?.name,
+      email: json['email'] ?? existingUser?.email,
+      phone: json['phone'] ?? existingUser?.phone,
+      password: existingUser?.password,
+      accessToken: json['accessToken'] ?? existingUser?.accessToken,
+      refreshToken: json['refreshToken'] ?? existingUser?.refreshToken,
+
+      imageUser: existingUser?.imageUser,
     );
   }
 
@@ -83,14 +87,22 @@ class UserModel {
     String password,
   ) {
     final userData = json['user'] as Map<String, dynamic>? ?? json;
+    final String? token =
+        json['accessToken'] ??
+        json['token'] ??
+        userData['accessToken'] ??
+        userData['token'];
+
+    final String? refresh = json['refreshToken'] ?? userData['refreshToken'];
+
     return UserModel(
       name: userData['name'] as String?,
       email: userData['email'] as String?,
       phone: userData['phone'] as String?,
       password: password,
-      accessToken: json['accessToken'] as String?,
-      refreshToken: json['refreshToken'] as String?,
-      imageUser: json['imageUser'],
+      accessToken: token,
+      refreshToken: refresh,
+      imageUser: userData['imageUser'] ?? userData['image'] as String?,
     );
   }
 }

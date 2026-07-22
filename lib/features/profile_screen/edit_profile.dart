@@ -93,9 +93,7 @@ class EditProfile extends StatelessWidget {
                               });
                             },
                             child: Container(
-                              padding: const EdgeInsets.all(
-                                6,
-                              ), // مساحة داخلية مناسبة حول الأيقونة
+                              padding: const EdgeInsets.all(6),
                               decoration: const BoxDecoration(
                                 color: Colors.white,
                                 shape: BoxShape.circle,
